@@ -3,7 +3,7 @@ import UsLogo from "assets/usa.png";
 
 const ROUTES = {
   ExamplePage: "/example-page",
-  HomePage: "/",
+  HomePage: "/penguins",
   WalletGenerator: "/wallet-generator",
   LuckWalletGenerator: "/luck-wallet-generator",
   ILCalculator: "/impermanent-loss-calculator",

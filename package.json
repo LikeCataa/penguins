@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "author": "",
-  "homepage": "./",
+  "homepage": "https://likecataa.github.io/penguins/",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",

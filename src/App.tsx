@@ -19,7 +19,7 @@ const StyledContainer = styled(Container)({
 function App() {
   return (
     <TonConnectUIProvider
-      manifestUrl="%public%/tonconnect-manifest.json"
+      manifestUrl="https://likecataa.github.io/penguins/tonconnect-manifest.json"
       walletsListConfiguration={{
         includeWallets: [
           {
