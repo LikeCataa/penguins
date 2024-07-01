@@ -59,7 +59,7 @@ const ContentBox = styled.div`
         transition: all linear 0.1s;
 
         &.rainbow {
-            background: linear-gradient(90deg, #FF0000 0%, #FFA51F 23%, #E8FC00 35%, #70FF6D 43%, #21FEFE 56%, #7F84FF 65%, #AE01FF 77%, #E903E0 93%);
+            background: linear-gradient(90deg, #F45549 0%, #FE951A 18%, #F5EB7E 36%, #F6EA89 54%, #60B0EE 72%, #9961DF 90%);
         }
         &.golden {
             background: rgb(249, 223, 117);;
