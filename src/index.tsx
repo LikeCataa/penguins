@@ -1,10 +1,13 @@
+import './polyfill';
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "App";
 import reportWebVitals from "reportWebVitals";
-import { HashRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { ContextProvider } from "context";
 import CssBaseline from "@mui/material/CssBaseline";
+import 'antd/dist/reset.css';
 import "translations";
 
 const root = ReactDOM.createRoot(
@@ -13,11 +16,12 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <CssBaseline />
-    <HashRouter>
+    
+    <BrowserRouter>
       <ContextProvider>
           <App />
       </ContextProvider>
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

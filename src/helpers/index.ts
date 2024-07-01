@@ -4,6 +4,4 @@ const getParamsFromUrl = (name: string) => {
   return query.get(name);
 };
 
-
-
 export { getParamsFromUrl };

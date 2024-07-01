@@ -1,4 +1,4 @@
-import { Address } from "ton";
+import { Address } from "@ton/ton";
 
 export enum WalletConnectorType {
   UNIVERSAL_DEEP_LINKS,

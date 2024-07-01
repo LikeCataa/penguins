@@ -1,3 +1,2 @@
-export * from './Modal'
-export * from './Page'
+export * from './MessageBox'
 export * from '../layouts/Header'

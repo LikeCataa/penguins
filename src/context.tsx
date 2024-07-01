@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useState } from "react";
-import { Address } from "ton";
+import { Address } from "@ton/ton";
 
 interface State {
   address?: Address;

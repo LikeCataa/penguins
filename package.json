@@ -6,31 +6,45 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@mui/base": "^5.0.0-beta.40",
     "@mui/icons-material": "^5.6.2",
     "@mui/material": "^5.7.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
+    "@ton/core": "^0.56.3",
+    "@ton/crypto": "^3.2.0",
+    "@ton/ton": "^13.11.2",
+    "@tonconnect/ui-react": "^2.0.5",
     "@types/bn.js": "^5.1.0",
+    "@types/codemirror": "^5.60.15",
     "@types/jest": "^27.5.1",
     "@types/node": "^16.11.35",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
+    "antd": "^5.18.3",
+    "bip39": "^3.1.0",
+    "buffer": "^6.0.3",
+    "clipboard": "^2.0.11",
+    "codemirror": "^5.65.16",
+    "file-saver": "^2.0.5",
     "i18next": "^21.8.2",
     "i18next-browser-languagedetector": "^6.1.4",
     "react": "^18.1.0",
+    "react-codemirror2": "^8.0.0",
     "react-dom": "^18.1.0",
     "react-i18next": "^11.16.9",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
-    "ton": "^11.6.0",
+    "react-scripts": "^5.0.1",
+    "tonweb-mnemonic": "^1.0.1",
     "typescript": "^4.6.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "prettier": "npx prettier --write 'src/**/*.{ts,js,tsx,json}'",
     "start": "react-scripts start",
-    "build": "BUILD_PATH='./docs' react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -53,6 +67,7 @@
     ]
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "prettier": "^2.6.2"
   },
   "prettier": {
