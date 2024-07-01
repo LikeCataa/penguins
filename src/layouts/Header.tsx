@@ -56,7 +56,7 @@ function Header() {
 
       <div className="header">
         <div className="left">
-          <Link to="/">
+          <Link to="/penguins">
             <img src={ton_penguins_logo} alt="" />
           </Link>
 
