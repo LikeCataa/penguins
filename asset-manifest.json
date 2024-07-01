@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/penguins/static/css/main.f61fc014.css",
-    "main.js": "/penguins/static/js/main.520fe1aa.js",
+    "main.js": "/penguins/static/js/main.c584120f.js",
     "static/js/787.59c5f584.chunk.js": "/penguins/static/js/787.59c5f584.chunk.js",
     "static/media/axios.cjs": "/penguins/static/media/axios.02a9e186cb20d7a3c731.cjs",
     "static/media/usa.png": "/penguins/static/media/usa.e926a47c8090a6b9c494.png",
     "index.html": "/penguins/index.html",
     "main.f61fc014.css.map": "/penguins/static/css/main.f61fc014.css.map",
-    "main.520fe1aa.js.map": "/penguins/static/js/main.520fe1aa.js.map",
+    "main.c584120f.js.map": "/penguins/static/js/main.c584120f.js.map",
     "787.59c5f584.chunk.js.map": "/penguins/static/js/787.59c5f584.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f61fc014.css",
-    "static/js/main.520fe1aa.js"
+    "static/js/main.c584120f.js"
   ]
 }
