@@ -137,7 +137,7 @@ export default function MassSender() {
             let code = Cell.fromBase64(MassSenderBocBase64);
             let data = beginCell()
                 .storeUint(Date.now(), 64)
-                .storeCoins(toNano(totalValue))
+                .storeCoins(totalValue)
                 .storeUint(message.length, 16)
                 .storeUint(0, 16)
                 .storeUint(0, 1)
@@ -159,6 +159,7 @@ export default function MassSender() {
             console.log(3);
             let cAddress = contractAddress(0, stateInit);
             console.log(4);
+            console.log((BigInt(totalValue) + (BigInt(message.length + Math.ceil(message.length / 254)) * toNano('0.01')) + (BigInt(message.length) * toNano('0.001'))).toString());
 
             await tonConnectUI.sendTransaction({
                 validUntil: Math.floor(Number(new Date()) / 1000) + 360,
