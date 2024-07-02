@@ -3,11 +3,14 @@ import { useState } from "react";
 import { Container } from "@mui/material";
 import { utils, writeFile } from "xlsx";
 import { saveAs } from 'file-saver';
-import { Address } from "@ton/core";
+import { Address, Dictionary, DictionaryValue, beginCell, Cell, contractAddress, StateInit, toNano, ExternalAddress } from "@ton/core";
+import TonWeb from "tonweb";
 import { InboxOutlined } from '@ant-design/icons';
 // import type { GetProp, UploadProps } from 'antd';
 import { Input, message, Popover, Dropdown } from 'antd';
 import CodeMirrorEditor from '../components/CodeMirrorEditor';
+import { MassSender as MassSenderContract, MassSenderConfig } from '../contracts/wrappers/MassSender';
+import { useTonConnectUI } from '@tonconnect/ui-react';
 
 import download from "../assets/download.png";
 
@@ -17,6 +20,9 @@ export default function MassSender() {
     const [inputOrUpload, setInputOrUpload] = useState<boolean>(true);
     const [comment, setComment] = useState<string>("");
     const [addressListStr, setAddressListStr] = useState<string>("");
+    const [tonConnectUI, setOptions] = useTonConnectUI();
+
+    const MassSenderBocBase64 = "te6cckECBwEAAVcAART/APSkE/S88sgLAQIBYgIGA+bQM9DTAwFxsJJfA+D6QDDtRNDTP/oA0w/TD9MA+kD0BDAiwACOITI2gggehIAjgQD9oIEA/qkEUkCgqBehUjC88tBlcQf4YY4VODj4KFJgxwVRaMcFFrHy4GT4ABBG4iWAEPR8b6WBAP4ktgiK5GwSs+MPAwQFAFQgjiYwAfoA+kAwAXCAEMjLBVADzxYB+gLLivhBzxbJcfsAJYAQ9Hxvpd4AfFtwIFUTVCYHBsjLP1AF+gITyw/LD8sAAc8W9ADJ7VRwgBjIywVYzxYh+gLLiouEV4Y2Vzc2VzjPFsmDBvsAAIQBgQD+oQGlEDZFE1BCBsjLP1AF+gITyw/LD8sAAc8W9ADJ7VT4KIIIHoSAcIAQyMsFUAPPFgH6AsuK+EHPFslx+wAANaFZZ9qJoaZ/9AGmH6YfpgH0gegIYCCMvg2AASLsoUc="
 
     // const props: UploadProps = {
     //     name: 'file',
@@ -65,9 +71,35 @@ export default function MassSender() {
         setComment(value);
     };
 
+    type Msg = {
+        value: bigint;
+        destination: Address;
+    };
+
+    function createMessageValue(): DictionaryValue<Msg> {
+        return {
+            serialize: (src, buidler) => {
+                buidler.storeCoins(src.value).storeAddress(src.destination);
+            },
+            parse: (src) => {
+                return { value: src.loadCoins(), destination: src.loadAddress() };
+            },
+        };
+    }
+
+    function messagesToDict(messages: Msg[]): Dictionary<number, Msg> {
+        let dict = Dictionary.empty(Dictionary.Keys.Uint(16), createMessageValue());
+        for (let i = 1; i <= messages.length; i++) {
+            dict.set(i, messages[i - 1]);
+        }
+        return dict;
+    }
+
     const send = async () => {
         let rowStrList;
-        let addressAndValueList:any = [];
+        let addressAndValueList: any = [];
+        let message: any = [];
+        let totalValue: number = 0;
 
         //validate address list
         if (addressListStr != "") {
@@ -80,19 +112,90 @@ export default function MassSender() {
             for (let i = 0; i < addressAndValueList.length; i++) {
                 if (addressAndValueList[i].length != 2) return;
                 let tempAddress = addressAndValueList[i][0].trim();
-                let tempValue = Number(addressAndValueList[i][1].trim());
+                let tempValue = addressAndValueList[i][1].trim();
 
                 if (!Address.isFriendly(tempAddress)) return;
                 if (isNaN(tempValue)) return;
 
-                addressAndValueList[i][0] = tempAddress;
-                addressAndValueList[i][1] = tempValue;
+                addressAndValueList[i][0] = Address.parse(tempAddress);
+                addressAndValueList[i][1] = toNano(tempValue);
+                totalValue += Number(addressAndValueList[i][1]);
+
+                message.push({
+                    value: addressAndValueList[i][1],
+                    destination: addressAndValueList[i][0]
+                })
             }
         }
+        console.log(1);
 
-        console.log(addressListStr, comment);
-        console.log(rowStrList);
-        console.log(addressAndValueList);
+        // console.log(addressListStr, comment);
+        // console.log(rowStrList);
+        // console.log(addressAndValueList);
+
+        if (message.length > 0) {
+            let code = Cell.fromBase64(MassSenderBocBase64);
+            let data = beginCell()
+                .storeUint(Date.now(), 64)
+                .storeCoins(toNano(totalValue))
+                .storeUint(message.length, 16)
+                .storeUint(0, 16)
+                .storeUint(0, 1)
+                .storeAddress(Address.parse('0QA1pWPJoe27enPAb9c-VNb4wYSrxluUvw61Ig8f_lC-ABYv'))
+                .storeDict(messagesToDict(message))
+                .endCell();
+
+            console.log(2);
+            let state_init_boc = beginCell()
+                .storeRef(code)
+                .storeRef(data)
+                .endCell().toBoc().toString("base64");
+
+            const stateInit: StateInit = {
+                code: code,
+                data: data
+            };
+            console.log(3);
+            let cAddress = contractAddress(0, stateInit);
+            console.log(4);
+
+            await tonConnectUI.sendTransaction({
+                validUntil: Math.floor(Number(new Date()) / 1000) + 360,
+                messages: [
+                    {
+                        address: cAddress.toRawString(),
+                        amount: (BigInt(totalValue) + toNano((message.length * 0.011).toString())).toString(),
+                        payload: "",
+                        stateInit: state_init_boc
+                    }
+                ]
+            })
+            console.log(5);
+
+            // await tonConnectUI.sendTransaction({
+            //     validUntil: Math.floor(Number(new Date()) / 1000) + 360,
+            //     messages: [
+            //         {
+            //             address: '0:3c35b788ac0aa2f782b68930277c6bc96993fa0a7137d52c3bcdbede574e3e60',
+            //             amount: "20000000"
+            //         }
+            //     ]
+            // })
+
+
+            // data.bits.writeUint(Date.now(), 64);
+            // data.bits.writeCoins(totalValue);
+            // data.bits.writeUint(message.length, 16);
+            // data.bits.writeUint(0, 16);
+            // data.bits.writeUint(0, 1);
+            // data.bits.writeAddress(new TonWeb.utils.Address("0QA1pWPJoe27enPAb9c-VNb4wYSrxluUvw61Ig8f_lC-ABYv"));
+            // data.refs.push(messagesToDict(message))
+
+            // tonConnectUI.sendTransaction(myTransaction)
+
+
+        }
+
     };
 
     return (
@@ -102,7 +205,7 @@ export default function MassSender() {
             </IntroductBox>
 
             <ActionBox>
-                <StyledInput placeholder="comment" value={comment} onChange={e =>{handleCommentChange(e.target.value)}} />
+                <StyledInput placeholder="comment" value={comment} onChange={e => { handleCommentChange(e.target.value) }} />
                 {/* <StyedCheckBox>
                     <div
                         className={inputOrUpload ? 'activate' : 'unactivate'}
