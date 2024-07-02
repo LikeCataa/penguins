@@ -147,9 +147,12 @@ export default function MassSender() {
 
             console.log(2);
 
-            const comment_boc = beginCell()
-                .storeStringRefTail("hello.")
-                .endCell().toBoc().toString("base64");
+            let comment_boc: string = "";
+            if (comment != "") {
+                comment_boc = beginCell()
+                    .storeStringRefTail("hello.")
+                    .endCell().toBoc().toString("base64");
+            }
 
             const stateInit: StateInit = {
                 code: code,
@@ -172,32 +175,9 @@ export default function MassSender() {
                     }
                 ]
             })
+
             console.log(5);
-
-            // await tonConnectUI.sendTransaction({
-            //     validUntil: Math.floor(Number(new Date()) / 1000) + 360,
-            //     messages: [
-            //         {
-            //             address: '0:3c35b788ac0aa2f782b68930277c6bc96993fa0a7137d52c3bcdbede574e3e60',
-            //             amount: "20000000"
-            //         }
-            //     ]
-            // })
-
-
-            // data.bits.writeUint(Date.now(), 64);
-            // data.bits.writeCoins(totalValue);
-            // data.bits.writeUint(message.length, 16);
-            // data.bits.writeUint(0, 16);
-            // data.bits.writeUint(0, 1);
-            // data.bits.writeAddress(new TonWeb.utils.Address("0QA1pWPJoe27enPAb9c-VNb4wYSrxluUvw61Ig8f_lC-ABYv"));
-            // data.refs.push(messagesToDict(message))
-
-            // tonConnectUI.sendTransaction(myTransaction)
-
-
         }
-
     };
 
     return (
