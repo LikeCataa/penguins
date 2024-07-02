@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Container } from "@mui/material";
 import { utils, writeFile } from "xlsx";
 import { saveAs } from 'file-saver';
-import { Address, Dictionary, DictionaryValue, beginCell, Cell, contractAddress, StateInit, toNano, ExternalAddress } from "@ton/core";
+import { Address, Dictionary, DictionaryValue, beginCell, Cell, contractAddress, StateInit, toNano, storeStateInit } from "@ton/core";
 import TonWeb from "tonweb";
 import { InboxOutlined } from '@ant-design/icons';
 // import type { GetProp, UploadProps } from 'antd';
@@ -146,15 +146,16 @@ export default function MassSender() {
                 .endCell();
 
             console.log(2);
-            let state_init_boc = beginCell()
-                .storeRef(code)
-                .storeRef(data)
+
+            const comment_boc = beginCell()
+                .storeStringRefTail("hello.")
                 .endCell().toBoc().toString("base64");
 
             const stateInit: StateInit = {
                 code: code,
                 data: data
             };
+
             console.log(3);
             let cAddress = contractAddress(0, stateInit);
             console.log(4);
@@ -164,9 +165,9 @@ export default function MassSender() {
                 messages: [
                     {
                         address: cAddress.toRawString(),
-                        amount: (BigInt(totalValue) + toNano((message.length * 0.011).toString())).toString(),
-                        payload: "",
-                        stateInit: state_init_boc
+                        amount: (BigInt(totalValue) + (BigInt(message.length + Math.ceil(message.length / 254)) * toNano('0.01')) + (BigInt(message.length) * toNano('1'))).toString(),
+                        payload: comment_boc,
+                        stateInit: beginCell().storeWritable(storeStateInit(stateInit)).endCell().toBoc().toString('base64')
                     }
                 ]
             })
