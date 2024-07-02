@@ -150,7 +150,7 @@ export default function MassSender() {
             let comment_boc: string = "";
             if (comment != "") {
                 comment_boc = beginCell()
-                    .storeStringRefTail("hello.")
+                    .storeStringRefTail(comment)
                     .endCell().toBoc().toString("base64");
             }
 
@@ -169,7 +169,7 @@ export default function MassSender() {
                 messages: [
                     {
                         address: cAddress.toRawString(),
-                        amount: (BigInt(totalValue) + (BigInt(message.length + Math.ceil(message.length / 254)) * toNano('0.01')) + (BigInt(message.length) * toNano('1'))).toString(),
+                        amount: (BigInt(totalValue) + (BigInt(message.length + Math.ceil(message.length / 254)) * toNano('0.01')) + (BigInt(message.length) * toNano('0.001'))).toString(),
                         payload: comment_boc,
                         stateInit: beginCell().storeWritable(storeStateInit(stateInit)).endCell().toBoc().toString('base64')
                     }
